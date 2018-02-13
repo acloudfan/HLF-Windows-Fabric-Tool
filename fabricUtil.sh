@@ -5,9 +5,12 @@ echo "Development only script for Hyperledger Fabric control"
 start_fabric() {
     # starts all dangling containers 
     # irrespective of whether they are related to Fabric or NOT 
+    echo "Starting all containers"
     docker ps -q -a | xargs docker start
     echo
-    echo 'Fabric DEV environment started - Use <ping> to confirm startup of your BNA!!!'
+    echo 'BNA container may still show up as dangling/exited - First command will start BNA'
+    echo 'Fabric DEV environment started !!!'
+    
 }
 
 stop_fabric() {
