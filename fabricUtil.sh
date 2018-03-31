@@ -30,4 +30,3 @@ case $1 in
     *)
         echo 'Usage: ./fabricUtil start | stop'
 esac
-

@@ -11,15 +11,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 #
 
-#Changes for windows - raj@acloudfan.com
-#ARCH=$ARCH docker-compose -f "${DIR}"/composer/docker-compose.yml down
-#PRIVATE_KEY="$(cygpath -pw "$PRIVATE_KEY")"
-#MSYS_NO_PATHCONV=1  COMPOSE_CONVERT_WINDOWS_PATHS=1
-COMPOSE_FILE="$(cygpath -pw "$DIR/composer/docker-compose.yml")"
-echo $COMPOSE_FILE
-ARCH=$ARCH docker-compose -f $COMPOSE_FILE down
-#ARCH=$ARCH docker-compose -f "${DIR}"/composer/docker-compose.yml up -d
-ARCH=$ARCH docker-compose -f $COMPOSE_FILE  up -d
+ARCH=$ARCH docker-compose -f "${DIR}"/composer/docker-compose.yml down
+ARCH=$ARCH docker-compose -f "${DIR}"/composer/docker-compose.yml up -d
 
 # wait for Hyperledger Fabric to start
 # incase of errors when running later commands, issue export FABRIC_START_TIMEOUT=<larger number>
