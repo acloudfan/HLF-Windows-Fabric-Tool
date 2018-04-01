@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Windows Fabric Tool"
+
 # Grab the current directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -24,8 +26,11 @@ else
     echo 'Need to have composer-cli installed at version 0.16'
     exit 1
 fi
+#Changed by Raj
+#cat << EOF > /tmp/.connection.json
+mkdir -p $DIR/temp;
 
-cat << EOF > /tmp/.connection.json
+cat << EOF > $DIR/temp/.connection.json
 {
     "name": "hlfv1",
     "type": "hlfv1",
@@ -48,13 +53,23 @@ EOF
 PRIVATE_KEY="${DIR}"/composer/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/114aab0e76bf0c78308f89efc4b8c9423e31568da0c340ca187a9b17aa9a4457_sk
 CERT="${DIR}"/composer/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
 
+# Changed by Raj to take care of the paths
+PRIVATE_KEY="$(cygpath -pw "$PRIVATE_KEY")"
+CERT="$(cygpath -pw "$CERT")"
+
 if "${HL_COMPOSER_CLI}" card list -n PeerAdmin@hlfv1 > /dev/null; then
     "${HL_COMPOSER_CLI}" card delete -n PeerAdmin@hlfv1
 fi
-"${HL_COMPOSER_CLI}" card create -p /tmp/.connection.json -u PeerAdmin -c "${CERT}" -k "${PRIVATE_KEY}" -r PeerAdmin -r ChannelAdmin --file /tmp/PeerAdmin@hlfv1.card
-"${HL_COMPOSER_CLI}" card import --file /tmp/PeerAdmin@hlfv1.card 
 
-rm -rf /tmp/.connection.json
+CYGDIR="$(cygpath -pw "$DIR")"
+
+#Changed by Raj
+#"${HL_COMPOSER_CLI}" card create -p /tmp/.connection.json -u PeerAdmin -c "${CERT}" -k "${PRIVATE_KEY}" -r PeerAdmin -r ChannelAdmin --file /tmp/PeerAdmin@hlfv1.card
+"${HL_COMPOSER_CLI}" card create-p $CYGDIR/temp/.connection.json -u PeerAdmin -c "${CERT}" -k "${PRIVATE_KEY}" -r PeerAdmin -r ChannelAdmin --file $CYGDIR/temp/PeerAdmin@hlfv1.card
+#"${HL_COMPOSER_CLI}" card import --file /tmp/PeerAdmin@hlfv1.card 
+"${HL_COMPOSER_CLI}" card import --file $CYGDIR/temp/PeerAdmin@hlfv1.card 
+#rm -rf /tmp/.connection.json
+rm -rf $CYGDIR/temp
 
 echo "Hyperledger Composer PeerAdmin card has been imported"
 "${HL_COMPOSER_CLI}" card list

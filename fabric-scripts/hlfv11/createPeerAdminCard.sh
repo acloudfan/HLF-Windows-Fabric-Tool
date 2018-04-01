@@ -1,4 +1,6 @@
 #!/bin/bash
+#- v - April 1st, 2018
+echo "Windows Fabric Tool "
 
 Usage() {
 	echo ""
@@ -54,6 +56,7 @@ fi
 
 # Grab the current directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CYGDIR="$(cygpath -pw "$DIR")"
 
 if [ -z "${HL_COMPOSER_CLI}" ]; then
   HL_COMPOSER_CLI=$(which composer)
@@ -77,6 +80,9 @@ else
     exit 1
 fi
 
+#Changed by Raj
+mkdir -p $DIR/temp;
+#cat << EOF > DevServer_connection.json
 cat << EOF > DevServer_connection.json
 {
     "name": "hlfv1",
@@ -144,22 +150,29 @@ PRIVATE_KEY="$(cygpath -pw "$PRIVATE_KEY")"
 CERT="$(cygpath -pw "$CERT")"
 
 if [ "${NOIMPORT}" != "true" ]; then
-    CARDOUTPUT=/tmp/PeerAdmin@hlfv1.card
+   # Changed by Raj
+   # CARDOUTPUT=/tmp/PeerAdmin@hlfv1.card
+    CARDOUTPUT=$CYGDIR/temp/PeerAdmin@hlfv1.card
 else
     CARDOUTPUT=PeerAdmin@hlfv1.card
 fi
-
+# Chnged by Raj
+#"${HL_COMPOSER_CLI}"  card create -p DevServer_connection.json -u PeerAdmin -c "${CERT}" -k "${PRIVATE_KEY}" -r PeerAdmin -r ChannelAdmin --file $CARDOUTPUT
 "${HL_COMPOSER_CLI}"  card create -p DevServer_connection.json -u PeerAdmin -c "${CERT}" -k "${PRIVATE_KEY}" -r PeerAdmin -r ChannelAdmin --file $CARDOUTPUT
 
 if [ "${NOIMPORT}" != "true" ]; then
     if "${HL_COMPOSER_CLI}"  card list -c PeerAdmin@hlfv1 > /dev/null; then
         "${HL_COMPOSER_CLI}"  card delete -c PeerAdmin@hlfv1
     fi
-
-    "${HL_COMPOSER_CLI}"  card import --file /tmp/PeerAdmin@hlfv1.card 
+# Changed by Raj
+#    "${HL_COMPOSER_CLI}"  card import --file /tmp/PeerAdmin@hlfv1.card 
+    "${HL_COMPOSER_CLI}"  card import --file $CYGDIR/temp/PeerAdmin@hlfv1.card
     "${HL_COMPOSER_CLI}"  card list
     echo "Hyperledger Composer PeerAdmin card has been imported, host of fabric specified as '${HOST}'"
-    rm /tmp/PeerAdmin@hlfv1.card
+
+# Changed by Raj    
+    #rm /tmp/PeerAdmin@hlfv1.card
+    rm $CYGDIR/temp/PeerAdmin@hlfv1.card
 else
     echo "Hyperledger Composer PeerAdmin card has been created, host of fabric specified as '${HOST}'"
 fi
