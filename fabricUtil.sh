@@ -13,7 +13,7 @@ start_fabric() {
 }
 
 stop_fabric() {
-    cd ./fabric-scripts/hlfv1/composer
+    cd ./fabric-scripts/hlfv11/composer
     docker-compose stop
     echo
     echo 'Fabric DEV environment stopped - DO NOT Clean the containers :)'
