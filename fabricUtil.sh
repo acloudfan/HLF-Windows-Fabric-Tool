@@ -2,14 +2,13 @@
 echo "Development only script for Hyperledger Fabric control"
 
 start_fabric() {
-    # starts all dangling containers 
-    # irrespective of whether they are related to Fabric or NOT 
-    echo "Starting all containers"
-    docker ps -q -a | xargs docker start
+    #Detect architecture
+    ARCH=`uname -m`
+
+    cd ./fabric-scripts/hlfv11/composer
+    ARCH=$ARCH docker-compose up -d
     echo
-    echo 'BNA container may still show up as dangling/exited - First command will start BNA'
-    echo 'Fabric DEV environment started !!!'
-    
+    echo 'Fabric DEV environment started'
 }
 
 stop_fabric() {
