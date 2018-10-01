@@ -19,8 +19,6 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Shut down the Docker containers that might be currently running.
-#DOCKER_FILE="${DIR}"/composer/docker-compose.yml
-
 # Changed by Raj
 #DOCKER_FILE="${DIR}"/composer/docker-compose.yml
 DOCKER_FILE="$(cygpath -pw "$DIR/composer/docker-compose.yml")"
